@@ -239,7 +239,7 @@
     background: var(--surface);
     border-top: 1px solid var(--border);
     flex-shrink: 0;
-    max-height: 42vh;
+    max-height: 34vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
@@ -528,7 +528,8 @@
     border-top: 1px solid var(--border);
     flex-shrink: 0;
     scrollbar-width: none;
-    min-height: 54px;
+    height: 56px;
+    max-height: 56px;
     align-items: center;
   }
   #gallery-strip::-webkit-scrollbar { display: none; }
@@ -1180,6 +1181,10 @@ function takePhoto() {
   const dataURL = captureFrameDataURL();
   addToGallery(dataURL);
   notify('📷 Photo captured');
+  // Ensure canvas overlay stays clear so live video is visible
+  const oc = document.getElementById('canvas-overlay');
+  const ctx = oc.getContext('2d');
+  ctx.clearRect(0, 0, oc.width, oc.height);
 }
 
 // ═══════════════════════════════════════════════
