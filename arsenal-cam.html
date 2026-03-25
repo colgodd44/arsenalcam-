@@ -774,7 +774,7 @@
           <div class="ai-setting-chip"><span class="chip-label">SCENE TYPE</span><span class="chip-val" id="chip-scene">—</span></div>
         </div>
       </div>
-      <button id="analyse-btn" onclick="runAIAnalysis()">⚡ ANALYSE SCENE</button>
+      <button id="analyse-btn" onclick="runAIAnalysis()">⚡ ANALYSE & SHOOT</button>
     </div>
 
     <!-- MANUAL PANEL -->
@@ -1275,7 +1275,16 @@ async function runAIAnalysis() {
     }
 
     document.getElementById('ai-status-text').textContent = `AI: ${result.confidence || 'OK'}`;
-    notify(`✓ ${result.scene} detected`);
+    notify(`✓ ${result.scene} — settings applied, shooting...`);
+
+    // Let filters settle then auto-shoot
+    await sleep(800);
+    flashEffect();
+    const dataURL = captureFrameDataURL();
+    addToGallery(dataURL, result.scene);
+    notify(`📷 AI shot captured (${result.scene})`);
+
+    setTimeout(() => document.getElementById('ai-overlay').classList.remove('show'), 3000);
 
   } catch(e) {
     document.getElementById('ai-suggestion-text').textContent = 'Analysis failed: ' + e.message;
@@ -1285,7 +1294,8 @@ async function runAIAnalysis() {
   }
 
   btn.disabled = false;
-  btn.textContent = '⚡ ANALYSE SCENE';
+  btn.textContent = '⚡ ANALYSE & SHOOT';
+  document.getElementById('controls').scrollTop = 0;
 }
 
 // ═══════════════════════════════════════════════
